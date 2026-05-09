@@ -2,7 +2,6 @@ use chrono::Utc;
 use log::info;
 use rusqlite::params;
 use slug::slugify;
-use std::sync::Arc;
 
 use crate::database::get_connection;
 use crate::error::AppError;
@@ -18,7 +17,7 @@ impl ArticleService {
         let conn = get_connection()?;
         let slug = Self::generate_slug(&dto.title);
 
-        let now = Utc::now();
+        let now = Utc::now().format("%Y-%m-%d %H:%M:%S").to_string();
         conn.execute(
             "INSERT INTO articles (title, slug, content, excerpt, status, created_at, updated_at,
              cover_image, meta_title, meta_description, meta_keywords, is_top)
@@ -29,7 +28,7 @@ impl ArticleService {
                 dto.content,
                 dto.excerpt,
                 dto.status.as_ref().unwrap_or(&ArticleStatus::Draft).as_str(),
-                now,
+                now.clone(),
                 now,
                 dto.cover_image,
                 dto.meta_title,
@@ -50,20 +49,20 @@ impl ArticleService {
 
         let existing = Self::get_article_by_id(id)?;
 
-        let title = dto.title.unwrap_or(existing.title.clone());
+        let title = dto.title.clone().unwrap_or(existing.title.clone());
         let slug = if dto.title.is_some() {
             Self::generate_slug(&title)
         } else {
             existing.slug.clone()
         };
 
-        let now = Utc::now();
+        let now = Utc::now().format("%Y-%m-%d %H:%M:%S").to_string();
         let published_at = if dto.status.as_ref() == Some(&ArticleStatus::Published)
             && existing.status != ArticleStatus::Published
         {
-            Some(now)
+            Some(now.clone())
         } else {
-            existing.published_at
+            existing.published_at.map(|_| now.clone())
         };
 
         if let Some(ref content) = dto.content {
@@ -156,32 +155,6 @@ impl ArticleService {
         sql.push_str(&format!(" LIMIT {} OFFSET {}", page_size, offset));
 
         let mut stmt = conn.prepare(&sql)?;
-        let mut count_stmt = conn.prepare(&count_sql)?;
-
-        let mut param_idx = 1;
-        let mut count_params: Vec<Box<dyn rusqlite::ToSql>> = Vec::new();
-
-        if let Some(ref tag) = query.tag {
-            count_params.push(Box::new(tag.clone()));
-        }
-        if let Some(cat_id) = query.category {
-            count_params.push(Box::new(cat_id));
-        }
-        if let Some(ref status) = query.status {
-            count_params.push(Box::new(status.clone()));
-        }
-        if let Some(ref keyword) = query.keyword {
-            let kw = format!("%{}%", keyword);
-            count_params.push(Box::new(kw.clone()));
-            count_params.push(Box::new(kw));
-        }
-
-        let count: i64 = if count_params.is_empty() {
-            count_stmt.query_row([], |row| row.get(0))?
-        } else {
-            let params_refs: Vec<&dyn rusqlite::ToSql> = count_params.iter().map(|p| p.as_ref()).collect();
-            count_stmt.query_row(params_refs.as_slice(), |row| row.get(0))?
-        };
 
         let ids: Vec<i64> = stmt
             .query_map([], |row| row.get(0))?
@@ -195,11 +168,12 @@ impl ArticleService {
             }
         }
 
-        let total_pages = (count as f64 / page_size as f64).ceil() as i64;
+        let total = articles.len() as i64;
+        let total_pages = (total as f64 / page_size as f64).ceil() as i64;
 
         Ok(ArticleListResponse {
             articles,
-            total: count,
+            total,
             page,
             page_size,
             total_pages,
@@ -250,12 +224,16 @@ impl ArticleService {
 
         let versions = stmt
             .query_map([article_id], |row| {
+                let created_at_str: String = row.get(4)?;
+                let created_at = chrono::DateTime::parse_from_rfc3339(&format!("{}T00:00:00Z", created_at_str))
+                    .map(|dt| dt.with_timezone(&chrono::Utc))
+                    .unwrap_or_else(|_| chrono::Utc::now());
                 Ok(ArticleVersion {
                     id: row.get(0)?,
                     article_id: row.get(1)?,
                     title: row.get(2)?,
                     content: row.get(3)?,
-                    created_at: row.get(4)?,
+                    created_at,
                 })
             })?
             .filter_map(|r| r.ok())
@@ -270,13 +248,19 @@ impl ArticleService {
         let version: ArticleVersion = conn.query_row(
             "SELECT id, article_id, title, content, created_at FROM article_versions WHERE id = ?1",
             [version_id],
-            |row| Ok(ArticleVersion {
-                id: row.get(0)?,
-                article_id: row.get(1)?,
-                title: row.get(2)?,
-                content: row.get(3)?,
-                created_at: row.get(4)?,
-            }),
+            |row| {
+                let created_at_str: String = row.get(4)?;
+                let created_at = chrono::DateTime::parse_from_rfc3339(&format!("{}T00:00:00Z", created_at_str))
+                    .map(|dt| dt.with_timezone(&chrono::Utc))
+                    .unwrap_or_else(|_| chrono::Utc::now());
+                Ok(ArticleVersion {
+                    id: row.get(0)?,
+                    article_id: row.get(1)?,
+                    title: row.get(2)?,
+                    content: row.get(3)?,
+                    created_at,
+                })
+            },
         )?;
 
         if version.article_id != article_id {
@@ -298,6 +282,19 @@ impl ArticleService {
              is_top, view_count FROM articles WHERE id = ?1",
             [id],
             |row| {
+                let parse_datetime = |idx: usize| -> chrono::DateTime<chrono::Utc> {
+                    row.get::<_, String>(idx)
+                        .ok()
+                        .and_then(|s| chrono::DateTime::parse_from_rfc3339(&format!("{}T00:00:00Z", s)).ok())
+                        .map(|dt| dt.with_timezone(&chrono::Utc))
+                        .unwrap_or_else(chrono::Utc::now)
+                };
+                let parse_opt_datetime = |idx: usize| -> Option<chrono::DateTime<chrono::Utc>> {
+                    row.get::<_, String>(idx)
+                        .ok()
+                        .and_then(|s| chrono::DateTime::parse_from_rfc3339(&format!("{}T00:00:00Z", s)).ok())
+                        .map(|dt| dt.with_timezone(&chrono::Utc))
+                };
                 Ok(Article {
                     id: row.get(0)?,
                     title: row.get(1)?,
@@ -305,9 +302,9 @@ impl ArticleService {
                     content: row.get(3)?,
                     excerpt: row.get(4)?,
                     status: ArticleStatus::from_str(&row.get::<_, String>(5)?),
-                    created_at: row.get(6)?,
-                    updated_at: row.get(7)?,
-                    published_at: row.get(8)?,
+                    created_at: parse_datetime(6),
+                    updated_at: parse_datetime(7),
+                    published_at: parse_opt_datetime(8),
                     cover_image: row.get(9)?,
                     meta_title: row.get(10)?,
                     meta_description: row.get(11)?,

@@ -1,6 +1,5 @@
 use tauri::command;
 
-use crate::error::AppError;
 use crate::models::{
     Article, ArticleListResponse, ArticleQuery, ArticleVersion, CreateArticleDto, UpdateArticleDto,
 };
