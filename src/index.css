@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', 'Monaco', 'monospace';
+}
+
+@layer base {
+  :root {
+    --color-primary: #1890FF;
+    --color-primary-hover: #40A9FF;
+    --color-primary-active: #096DD9;
+    --color-success: #52C41A;
+    --color-warning: #FAAD14;
+    --color-error: #FF4D4F;
+    --color-info: #1890FF;
+    --color-text-primary: #262626;
+    --color-text-secondary: #595959;
+    --color-text-tertiary: #8C8C8C;
+    --color-text-disabled: #BFBFBF;
+    --color-border: #D9D9D9;
+    --color-bg-base: #F5F5F5;
+    --color-bg-secondary: #FAFAFA;
+    --color-bg-elevated: #FFFFFF;
+  }
+
+  .dark {
+    --color-primary: #177DDC;
+    --color-primary-hover: #3C9AE8;
+    --color-primary-active: #095CB5;
+    --color-success: #49AA19;
+    --color-warning: #D89614;
+    --color-error: #D32029;
+    --color-info: #177DDC;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #A6A6A6;
+    --color-text-tertiary: #737373;
+    --color-text-disabled: #4A4A4A;
+    --color-border: #434343;
+    --color-bg-base: #141414;
+    --color-bg-secondary: #1F1F1F;
+    --color-bg-elevated: #2A2A2A;
+  }
+
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition-property: color, background-color;
+    transition-duration: 150ms;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+  .btn-primary:active {
+    background-color: var(--color-primary-active);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition-property: color, border-color;
+    transition-duration: 150ms;
+  }
+  .btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .input-base {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    border-radius: 0.375rem;
+  }
+  .input-base:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+  }
+
+  .card {
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+}

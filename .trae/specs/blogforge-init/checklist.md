@@ -1,0 +1,41 @@
+# BlogForge 项目验证清单
+
+- [ ] 项目骨架：Tauri 2.x + React 18 + TypeScript + Vite 项目可正常启动（npm run tauri dev）
+- [ ] 目录结构：符合开发规范文档中定义的前端和后端目录结构
+- [ ] 依赖配置：Tailwind CSS、Zustand、i18next、React Router、lucide-react 已正确安装和配置
+- [ ] Tailwind CSS 主题色彩：亮色/暗色主题色彩变量严格按 UI/UX 设计规范文档定义
+- [ ] 数据库表结构：12 张表完整创建，包含所有字段、约束和索引（与数据库设计文档一致）
+- [ ] 数据库迁移框架：支持版本号检查和自动迁移
+- [ ] 数据库自动备份：启动时自动备份，保留最近 5 个备份文件
+- [ ] Rust 数据模型：Article, Tag, Category, ArticleVersion, Image, ImagebedConfig, SiteConfig, DeployConfig, DeployLog, CustomPage 全部实现
+- [ ] 文章 CRUD API：create_article, update_article, delete_article, get_article, list_articles 正确工作
+- [ ] 文章搜索 API：search_articles 支持关键词全文搜索
+- [ ] 文章状态管理：draft/published/trash 状态流转正确
+- [ ] 版本管理：自动保存历史版本，get_article_versions 和 restore_version 正确工作
+- [ ] 标签/分类 CRUD：创建、编辑、删除标签和分类正确
+- [ ] 文章-标签关联：多对多关系正确存储和查询
+- [ ] 图床 Trait：ImageBed trait 定义完整，适配器骨架正确
+- [ ] 图片上传 API：upload_image, delete_image, list_images 接口正确
+- [ ] 图床配置 API：create_imagebed, update_imagebed, delete_imagebed, test_imagebed 正确
+- [ ] 静态网站生成器：generate_site 可生成首页、文章页、标签页、分类页、归档页、自定义页面
+- [ ] SEO 文件生成：sitemap.xml, feed.xml (RSS), robots.txt 正确生成
+- [ ] 部署 API：deploy_site 支持 local 本地导出方式
+- [ ] 站点配置 API：get_site_config, update_site_config 正确读写 site_config 表
+- [ ] 自定义页面 API：create_custom_page, update_custom_page, delete_custom_page 正确
+- [ ] 前端通用组件：Button, Input, Textarea, Select, Modal, Toast, Card, Table, Dropdown, Badge, Loading 实现且样式正确
+- [ ] 布局组件：Sidebar（240px/64px 可折叠）、Header 布局正确
+- [ ] 主题系统：亮色/暗色主题切换正常，色彩系统一致
+- [ ] 状态管理：articleStore, imageStore, configStore, deployStore, appStore 完整
+- [ ] 路由配置：Dashboard, Articles, Editor, Settings 路由正确
+- [ ] 三栏式布局：侧边栏 + 列表区 + 主内容区布局正确
+- [ ] 仪表盘页面：统计卡片（文章总数/已发布/草稿）和最近文章列表正确显示
+- [ ] 文章列表页：搜索、筛选（全部/已发布/草稿/回收站）、排序切换正常
+- [ ] Markdown 编辑器：分屏编辑+预览、工具栏（保存/发布/预览/设置）、侧边栏（标签/分类/SEO/封面）、底部状态栏
+- [ ] 图片管理页：图片列表、上传功能、图床配置表单
+- [ ] 设置页面：左侧分类导航 + 右侧表单 + 保存按钮
+- [ ] 部署/预览页面：生成预览入口、部署配置表单、日志列表
+- [ ] 国际化：zh-CN 和 en-US 翻译文件完整，语言切换正确
+- [ ] 快捷键：Ctrl+S 保存、Ctrl+N 新建等快捷键可用
+- [ ] Rust 编译通过：cargo build 无错误
+- [ ] 前端构建通过：npm run build 无错误
+- [ ] 应用启动：tauri dev 可正常启动并显示仪表盘

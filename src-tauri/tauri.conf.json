@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicegui/tauri-settings/main/schema.json",
+  "productName": "BlogForge",
+  "version": "0.1.0",
+  "identifier": "com.blogforge.app",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "BlogForge",
+        "width": 1280,
+        "height": 720,
+        "minWidth": 960,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  }
+}

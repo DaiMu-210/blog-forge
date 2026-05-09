@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="nibGrad" x1="0" y1="0" x2="1" y2="0.7">
+      <stop offset="0%" stop-color="#6a6a6a"/>
+      <stop offset="25%" stop-color="#4a4a4a"/>
+      <stop offset="60%" stop-color="#2a2a2a"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+    <linearGradient id="nibHL" x1="0" y1="0" x2="0.35" y2="0.6">
+      <stop offset="0%" stop-color="#888888"/>
+      <stop offset="40%" stop-color="#555555"/>
+      <stop offset="100%" stop-color="#222222"/>
+    </linearGradient>
+    <linearGradient id="anvilGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#555555"/>
+      <stop offset="40%" stop-color="#3a3a3a"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="anvilDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#333333"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+    <linearGradient id="flameMain" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%" stop-color="#CC3300"/>
+      <stop offset="35%" stop-color="#FF5500"/>
+      <stop offset="65%" stop-color="#FF8833"/>
+      <stop offset="100%" stop-color="#FFCC88"/>
+    </linearGradient>
+    <linearGradient id="flameInner" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%" stop-color="#FF6600"/>
+      <stop offset="50%" stop-color="#FFAA44"/>
+      <stop offset="100%" stop-color="#FFEECC"/>
+    </linearGradient>
+    <linearGradient id="flameSide" x1="0.3" y1="1" x2="0.7" y2="0">
+      <stop offset="0%" stop-color="#AA2200"/>
+      <stop offset="50%" stop-color="#DD4400"/>
+      <stop offset="100%" stop-color="#FF8833"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- === BACKGROUND: dark rounded square === -->
+  <rect x="32" y="32" width="448" height="448" rx="96" ry="96" fill="#1a1a2e"/>
+
+  <!-- === PEN NIB (top portion, y: 60~240) === -->
+  <g filter="url(#shadow)">
+    <!-- Nib outer shape - left highlight half -->
+    <path d="
+      M 256 68
+      C 228 68, 188 88, 170 126
+      C 152 164, 150 196, 154 218
+      C 156 228, 160 234, 168 238
+      L 225 248
+      C 232 250, 238 253, 244 258
+      L 256 276
+      L 268 258
+      C 274 253, 280 250, 287 248
+      L 344 238
+      C 352 234, 356 228, 358 218
+      C 362 196, 360 164, 342 126
+      C 324 88, 284 68, 256 68
+      Z
+    " fill="url(#nibHL)" stroke="#555" stroke-width="0.5"/>
+
+    <!-- Nib right side shadow -->
+    <path d="
+      M 256 68
+      C 284 68, 324 88, 342 126
+      C 360 164, 362 196, 358 218
+      C 356 228, 352 234, 344 238
+      L 287 248
+      C 280 250, 274 253, 268 258
+      L 256 276
+      L 256 68
+      Z
+    " fill="url(#nibGrad)" opacity="0.55"/>
+
+    <!-- Nib center slit -->
+    <line x1="256" y1="68" x2="256" y2="198" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Breather hole -->
+    <ellipse cx="256" cy="205" rx="7" ry="8" fill="#0a0a0a"/>
+    <ellipse cx="256" cy="205" rx="7" ry="8" fill="none" stroke="#444" stroke-width="0.5"/>
+  </g>
+
+  <!-- === ANVIL TRANSITION (middle portion, y: 240~330) === -->
+  <g filter="url(#shadow)">
+    <!-- Anvil top surface (where nib meets anvil) -->
+    <path d="
+      M 235 260
+      L 245 278
+      L 267 278
+      L 277 260
+      Z
+    " fill="#666"/>
+
+    <!-- Anvil left facet -->
+    <path d="
+      M 235 260
+      L 220 296
+      C 216 306, 214 314, 218 320
+      L 240 338
+      C 244 340, 250 342, 256 344
+      L 256 278
+      L 245 278
+      Z
+    " fill="url(#anvilGrad)"/>
+
+    <!-- Anvil right facet -->
+    <path d="
+      M 277 260
+      L 292 296
+      C 296 306, 298 314, 294 320
+      L 272 338
+      C 268 340, 262 342, 256 344
+      L 256 278
+      L 267 278
+      Z
+    " fill="url(#anvilDark)"/>
+
+    <!-- Anvil center facet -->
+    <path d="
+      M 245 278
+      L 237 310
+      C 238 322, 244 334, 256 340
+      L 256 278
+      Z
+    " fill="#444"/>
+
+    <path d="
+      M 267 278
+      L 275 310
+      C 274 322, 268 334, 256 340
+      L 256 278
+      Z
+    " fill="#333"/>
+
+    <!-- Anvil facet highlight lines -->
+    <path d="M 220 296 L 237 310" stroke="#555" stroke-width="1" fill="none"/>
+    <path d="M 292 296 L 275 310" stroke="#444" stroke-width="0.8" fill="none"/>
+    <path d="M 218 320 L 238 322" stroke="#4a4a4a" stroke-width="0.8" fill="none"/>
+    <path d="M 294 320 L 274 322" stroke="#3a3a3a" stroke-width="0.8" fill="none"/>
+  </g>
+
+  <!-- === FLAME (bottom portion, y: 330~440) === -->
+  <!-- Outer flame shape (darker) -->
+  <path d="
+    M 206 435
+    C 206 396, 224 368, 236 346
+    C 242 335, 248 328, 256 322
+    C 264 328, 270 335, 276 346
+    C 288 368, 306 396, 306 435
+    C 306 442, 302 446, 296 446
+    L 216 446
+    C 210 446, 206 442, 206 435
+    Z
+  " fill="url(#flameSide)"/>
+
+  <!-- Left flame accent -->
+  <path d="
+    M 210 435
+    C 210 405, 226 378, 238 358
+    C 244 348, 250 342, 254 340
+    C 254 352, 250 374, 240 398
+    C 232 415, 216 432, 210 435
+    Z
+  " fill="url(#flameMain)" opacity="0.7"/>
+
+  <!-- Right flame accent -->
+  <path d="
+    M 302 435
+    C 302 405, 286 378, 274 358
+    C 268 348, 262 342, 258 340
+    C 258 352, 262 374, 272 398
+    C 280 415, 296 432, 302 435
+    Z
+  " fill="url(#flameMain)" opacity="0.7"/>
+
+  <!-- Central main flame -->
+  <path d="
+    M 230 440
+    C 230 400, 248 370, 256 340
+    C 264 370, 282 400, 282 440
+    Z
+  " fill="url(#flameMain)"/>
+
+  <!-- Inner bright flame -->
+  <path d="
+    M 240 440
+    C 240 410, 252 390, 256 365
+    C 260 390, 272 410, 272 440
+    Z
+  " fill="url(#flameInner)" filter="url(#glow)"/>
+
+  <!-- Flame core (brightest) -->
+  <path d="
+    M 247 440
+    C 247 420, 254 405, 256 388
+    C 258 405, 265 420, 265 440
+    Z
+  " fill="#FFEECC" opacity="0.85"/>
+
+  <!-- === SPARK PARTICLES === -->
+  <circle cx="198" cy="370" r="2.5" fill="#FFAA44" opacity="0.8"/>
+  <circle cx="310" cy="380" r="2" fill="#FF8833" opacity="0.7"/>
+  <circle cx="205" cy="338" r="1.5" fill="#FFCC88" opacity="0.6"/>
+  <circle cx="300" cy="345" r="1.5" fill="#FFCC88" opacity="0.5"/>
+  <circle cx="190" cy="400" r="1.5" fill="#FF6600" opacity="0.4"/>
+  <circle cx="318" cy="405" r="1" fill="#FF6600" opacity="0.5"/>
+</svg>
